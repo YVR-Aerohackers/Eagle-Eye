@@ -1,0 +1,7 @@
+python==3.9.18
+opencv_python==4.9.0.80
+opencv_python_headless==4.8.0.74
+python-dotenv==1.0.1
+roboflow==1.1.26
+sendgrid==6.11.0
+twilio==9.0.4

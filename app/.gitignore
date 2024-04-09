@@ -1,0 +1,8 @@
+.env
+recipients.txt
+input/*.*
+output/*.*
+reports/*.*
+__pycache__/
+.DS_Store
+*.jpg
