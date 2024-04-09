@@ -33,12 +33,10 @@ class Controller:
             elif choice == "2":
                 self.run_manual_scan()
             elif choice == "3":
-                self.save_results_as_report()
-            elif choice == "4":
                 self.send_report_to_staff()
-            elif choice == "5":
+            elif choice == "4":
                 self.view_live_stream()
-            elif choice == "6":
+            elif choice == "5":
                 break
             else:
                 self.view.display_invalid_choice()
@@ -75,30 +73,20 @@ class Controller:
                 detections, timestamp, output_paths
             )
             self.view.display_scan_complete()
-            self._toggle_new_scan()
+            self._toggle_new_scan() if not self.new_scan else None
         except Exception as e:
             self.view.display_error_message(str(e))
 
-    def save_results_as_report(self):
+    def send_report_to_staff(self):
         try:
             if not self.new_scan:
                 raise ValueError("No new scan has been made")
 
             report_path = self.report_manager.get_latest_report()
             if report_path:
-                self.view.display_report_saved(report_path)
-                self._toggle_new_scan()
-            else:
-                self.view.display_no_report_available()
-        except Exception as e:
-            self.view.display_error_message(str(e))
-
-    def send_report_to_staff(self):
-        try:
-            report_path = self.report_manager.get_latest_report()
-            if report_path:
                 self.notification_manager.send_notifications(report_path)
                 self.view.display_report_sent()
+                self._toggle_new_scan() if self.new_scan else None
             else:
                 self.view.display_no_report_available()
         except Exception as e:
