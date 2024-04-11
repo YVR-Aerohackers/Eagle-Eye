@@ -6,10 +6,11 @@ class View:
             "\n\t··········· YVR Eagle-Eye ··········"
             "\n\t===================================="
             "\n\t[ 1.] ·· Connect Camera"
-            "\n\t[ 2.] ·· Run Manual Scan"
-            "\n\t[ 3.] ·· Send Report to Staff"
-            "\n\t[ 4.] ·· View Live Stream"
-            "\n\t[ 5.] ·· Exit"
+            "\n\t[ 2.] ·· Run Auto Scan"
+            "\n\t[ 3.] ·· Run Manual Scan"
+            "\n\t[ 4.] ·· Send Report to Staff"
+            "\n\t[ 5.] ·· View Live Stream"
+            "\n\t[ 6.] ·· Exit"
             "\n\t====================================\n"
         )
         return input("Enter your choice: ")
@@ -27,6 +28,7 @@ class View:
             "\n\t[ 1.] ·· Image"
             "\n\t[ 2.] ·· Video"
             "\n\t[ 3.] ·· Directory"
+            "\n\t[ 4.] ·· Cancel"
             "\n\t====================================\n"
         )
         return input("Enter input type: ")

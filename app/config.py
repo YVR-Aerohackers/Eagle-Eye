@@ -27,3 +27,6 @@ OUT_MOV_DIR = os.getenv("OUT_MOV_DIR", "output/mov")
 OUT_LIVE_DIR = os.getenv("OUT_LIVE_DIR", "output/live")
 
 REPORTS_DIR = os.getenv("REPORTS_DIR", "reports")
+
+NETWORK_CAMERA_IP_1 = os.getenv("NETWORK_CAMERA_IP_1")
+NETWORK_CAMERA_IP_2 = os.getenv("NETWORK_CAMERA_IP_2")

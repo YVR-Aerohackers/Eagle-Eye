@@ -5,6 +5,7 @@ from report_manager import ReportManager
 from notification_manager import NotificationManager
 from file_explorer import FileExplorer
 from datetime import datetime
+import config
 
 
 class Controller:
@@ -31,34 +32,67 @@ class Controller:
             if choice == "1":
                 self.connect_camera()
             elif choice == "2":
-                self.run_manual_scan()
+                self.run_auto_scan()
             elif choice == "3":
-                self.send_report_to_staff()
+                self.run_manual_scan()
             elif choice == "4":
-                self.view_live_stream()
+                self.send_report_to_staff()
             elif choice == "5":
+                self.view_live_stream()
+            elif choice == "6":
                 break
             else:
                 self.view.display_invalid_choice()
 
     def connect_camera(self):
-        camera_id = self.view.get_camera_id()
-        if self.camera_manager.connect_camera(camera_id):
-            self.view.display_camera_connected(camera_id)
-        else:
+        """
+        Connects to a camera based on the camera ID obtained from the view.
+        Displays a message on the view based on the success or failure of the connection.
+        """
+        camera_id = self.view.get_camera_id() or "0"  # Fallback to default camera ID if None
+
+        camera_urls = {
+            "1": config.NETWORK_CAMERA_IP_1,
+            "2": config.NETWORK_CAMERA_IP_2,
+        }
+        camera_url = camera_urls.get(camera_id, camera_id)  # Use camera_id itself if not in map
+
+        try:
+            if self.camera_manager.connect_camera(camera_url):
+                self.view.display_camera_connected(camera_id)
+            else:
+                self.view.display_camera_connection_error(camera_id)
+        except Exception as e:
             self.view.display_camera_connection_error(camera_id)
+
+    def run_auto_scan(self):
+        try:
+            detections, output_paths = self.scan_manager.run_auto_scan()
+            if detections:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                camera_id = self.camera_manager.get_camera_id()
+                report_path = self.report_manager.save_detections(detections, timestamp, output_paths, camera_id)
+                self.notification_manager.send_notifications(report_path)
+                self.view.display_report_sent()
+            else:
+                self.view.display_error_message("No detections made.")
+        except Exception as e:
+            self.view.display_error_message(str(e))
 
     def run_manual_scan(self):
         try:
-            input_type = self.view.get_input_type()
-            if input_type == "1":
-                input_path = self.file_explorer.select_image()
-            elif input_type == "2":
-                input_path = self.file_explorer.select_video()
-            elif input_type == "3":
-                input_path = self.file_explorer.select_directory()
-            else:
-                raise ValueError("Invalid input type")
+            while True:
+                input_type = self.view.get_input_type()
+                if input_type == "1":
+                    input_path = self.file_explorer.select_image()
+                elif input_type == "2":
+                    input_path = self.file_explorer.select_video()
+                elif input_type == "3":
+                    input_path = self.file_explorer.select_directory()
+                elif input_type == "4":  # Cancel
+                    break
+                else:
+                    print("Invalid input type")
 
             detections, output_paths = self.scan_manager.run_scan(
                 input_type, input_path
@@ -69,8 +103,9 @@ class Controller:
                 return
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            camera_id = self.camera_manager.get_camera_id()
             report_path = self.report_manager.save_detections(
-                detections, timestamp, output_paths
+                detections, timestamp, output_paths, camera_id=camera_id
             )
             self.view.display_scan_complete()
             self._toggle_new_scan() if not self.new_scan else None

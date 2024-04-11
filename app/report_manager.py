@@ -8,13 +8,16 @@ class ReportManager:
         self.reports_directory = config.REPORTS_DIR
         os.makedirs(self.reports_directory, exist_ok=True)
 
-    def format_report_content(self, detections, timestamp, output_paths):
+    def format_report_content(self, detections, timestamp, output_paths, camera_id=None):
         output_paths_str = "\n".join(f"- {path}" for path in output_paths)
         detections_str = "\n".join(
             f"Label: {det['label']}, Confidence: {det['confidence']}, Bounding Box: {det['bbox']}"
             for det in detections
         )
         report_content = (
+            "YVR Eagle-Eye Report\n"
+            "====================\n\n"
+            f"Camera ID: {camera_id}\n"
             f"Timestamp: {timestamp}\n"
             "Output Paths:\n"
             f"{output_paths_str}\n\n"
@@ -23,11 +26,11 @@ class ReportManager:
         )
         return report_content
 
-    def save_detections(self, detections, timestamp, output_paths):
+    def save_detections(self, detections, timestamp, output_paths, camera_id=None):
         report_filename = f"report_{timestamp}.txt"
         report_path = os.path.join(self.reports_directory, report_filename)
 
-        report_content = self.format_report_content(detections, timestamp, output_paths)
+        report_content = self.format_report_content(detections, timestamp, output_paths, camera_id)
         print("Saving report...")
         print(f"\n{report_content}")
         with open(report_path, "w") as file:
