@@ -70,7 +70,7 @@ class ObjectDetector:
         # Generate output path based on media type
         output_path = self.generate_output_path(camera_id, media_out)
         cv2.imwrite(output_path, frame)
-        return detections
+        return detections, output_path
 
     def generate_output_path(self, camera_id, media_type):
         """

@@ -50,19 +50,15 @@ class ScanManager:
             raise ValueError("Invalid input type")
 
         camera_id = self.camera_manager.get_camera_id()
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         detections = []
         output_paths = []
 
         # Process each frame to detect objects
         for frame in input_data:
-            frame_detections = self.object_detector.detect_objects(
+            frame_detections, output_path = self.object_detector.detect_objects(
                 frame, camera_id, config.OUT_IMG_DIR
             )
             detections.extend(frame_detections)  # Add the detected objects to the list
-            output_path = os.path.join(
-                config.OUT_IMG_DIR, f"{timestamp}.jpg"
-            )  # Create the output file path
             output_paths.append(
                 output_path
             )  # Add the output path of the .jpg file to the list

@@ -113,6 +113,10 @@ class Controller:
 
         @return (tuple): A tuple containing the detections and output paths
         """
+        if not self._camera_connected():
+            self.view.display_error_message("No camera connected")
+            return
+
         try:
             detections, output_paths = self.scan_manager.run_auto_scan()
             if detections:
@@ -147,6 +151,14 @@ class Controller:
                     break
                 else:
                     print("Invalid input type")
+
+            if input_type == "4":
+                print("Scan cancelled")
+                return
+    
+            if input_path is None:
+                self.view.display_error_message("No input path selected.")
+                return
 
             detections, output_paths = self.scan_manager.run_scan(
                 input_type, input_path
