@@ -139,22 +139,18 @@ class Controller:
         @return (tuple): A tuple containing the detections and output paths
         """
         try:
-            while True:
-                input_type = self.view.get_input_type()
-                if input_type == "1":
-                    input_path = self.file_explorer.select_image()
-                elif input_type == "2":
-                    input_path = self.file_explorer.select_video()
-                elif input_type == "3":
-                    input_path = self.file_explorer.select_directory()
-                elif input_type == "4":  # Cancel
-                    break
-                else:
-                    print("Invalid input type")
-
-            if input_type == "4":
+            input_type = self.view.get_input_type()
+            if input_type == "1":
+                input_path = self.file_explorer.select_image()
+            elif input_type == "2":
+                input_path = self.file_explorer.select_video()
+            elif input_type == "3":
+                input_path = self.file_explorer.select_directory()
+            elif input_type == "4":  # Cancel
                 print("Scan cancelled")
                 return
+            else:
+                print("Invalid input type")
     
             if input_path is None:
                 self.view.display_error_message("No input path selected.")
